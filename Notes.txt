@@ -25,12 +25,122 @@
 
 7-remove all other file and remain only index.js file
 
-//2-==================create ====================================
-1-
-2-
-3-
-4-
-5-
+//2-=====using customFetch() and API_ROOT_URL getPosts from api ========
+
+1-----------all API URLcreated in src/utils/index.js---------------------
+const API_ROOT = 'https://codeial.codingninjas.com:8000/api/v2/';
+
+// doc url - https://www.notion.so/aakashcn/Codeial-API-docs-3a4d0b5a42c54f0a94d951a42aabc13f
+export const API_URLS = {
+  login: () => `${API_ROOT}/users/login`,
+  signup: () => `${API_ROOT}/users/signup`,
+  posts: (page, limit) => `${API_ROOT}/posts?page=${page}&limit=${limit}`,
+  createPost: () => `${API_ROOT}/posts/create`,
+  createFriendship: (userId) =>
+    `${API_ROOT}/friendship/create_friendship?user_id=${userId}`,
+  friends: () => `${API_ROOT}/friendship/fetch_user_friends`,
+  removeFriend: (userId) =>
+    `${API_ROOT}/friendship/remove_friendship?user_id=${userId}`,
+  toggleLike: (itemId, itemType) =>
+    `${API_ROOT}/likes/toggle?likeable_id=${itemId}&likeable_type=${itemType}`, // itemType is 'Post'/'Comment'
+  getLikes: (itemId, itemType) =>
+    `${API_ROOT}/likes?likeable_id=${itemId}&likeable_type=${itemType}`,
+  comment: () => `${API_ROOT}/comments`, // POST - create, GET - list of comments
+  deleteComment: (commentId) => `${API_ROOT}/comments?comment_id=${commentId}`,
+  editUser: () => `${API_ROOT}/users/edit`,
+  userInfo: (userId) => `${API_ROOT}/users/${userId}`,
+  searchUsers: (searchText) => `${API_ROOT}/users/search?text=${searchText}`,
+};
+
+export const LOCALSTORAGE_TOKEN_KEY = '__codeial_token__';
+
+2---------customFetch created in src/api/index.js for req & res------------------
+import { API_URLS, LOCALSTORAGE_TOKEN_KEY } from '../utils';
+
+const customFetch = async (url, { body, ...customConfig }) => {
+  const token = window.localStorage.getItem(LOCALSTORAGE_TOKEN_KEY);
+
+  const headers = {
+    'content-type': 'application/json',
+    Accept: 'application/json',
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const config = {
+    ...customConfig,
+    headers: {
+      ...headers,
+      ...customConfig.headers,
+    },
+  };
+
+  if (body) {
+    config.body = JSON.stringify(body);
+  }
+
+  try {
+    const response = await fetch(url, config);
+    const data = await response.json();
+
+    if (data.success) {
+      return {
+        data: data.data,
+        success: true,
+      };
+    }
+
+    throw new Error(data.message);
+  } catch (error) {
+    console.error('error');
+    return {
+      message: error.message,
+      success: false,
+    };
+  }
+};
+
+const getPosts = (page = 1, limit = 5) => {};
+
+3-----getPosts from api using customFetch()  and print response  on console-------
+  --------export getPosts  in src/api/index.js for req & res---------
+  export const getPosts = (page = 1, limit = 5) => {
+  return customFetch(API_URLS.posts(page, limit), {
+    method: 'GET',
+  });
+};
+
+  ------------getPosts called in App.js and get response and print on console--------
+  // import './App.css';
+import {useEffect} from 'react'
+import {getPosts} from '../api/index';
+
+
+function App() {
+  
+  useEffect(()=>{
+
+    const fetchPosts=async ()=>{
+       const response=await getPosts();
+       console.log("response",response);
+     }
+     fetchPosts();
+  },[]);
+
+  return (
+    <div className="App">
+      <h1>Hello World</h1>
+    </div>
+  );
+}
+
+export default App;
+4----------output on console------------------------
+>Obj
+data: {next: {…}, posts: Array(5)}
+success: true
 
 //3-==================create ====================================
 1-
