@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 //import {BrowserRouter as Routes,Route} from 'react-router-dom'
-import {Routes, Route,Switch} from 'react-router-dom';
+import {Routes, Route} from 'react-router-dom';
 
 import { getPosts } from '../api';
 import {  Home ,Login } from '../pages';

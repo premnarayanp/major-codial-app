@@ -1,0 +1,129 @@
+ llllllllllllllllllllll Notes-Routing &Auth lllllllllllllllllllllllllllllllll
+ 1==================================install router-dom============
+PS C:\Users\premn\Desktop\REACTWS\major-codial-app> npm i react-router-dom
+ 
+ 2=============Router added using react-router-dom==========================
+ 1-------------App.js----------------
+ import { useEffect, useState } from 'react';
+//import {BrowserRouter as Routes,Route} from 'react-router-dom'
+import {Routes, Route,Switch} from 'react-router-dom';
+
+import { getPosts } from '../api';
+import {  Home ,Login } from '../pages';
+import { Loader, Navbar } from './';
+
+const About=()=>{
+  return <h1>About</h1>
+};
+
+const UserInfo=()=>{
+  return <h1>UserInfo</h1>
+};
+
+const Page404=()=>{
+  return <h1>404</h1>
+};
+
+
+function App() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await getPosts();
+
+      if (response.success) {
+        setPosts(response.data.posts);
+      }
+
+      setLoading(false);
+    };
+
+    fetchPosts();
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+
+ // console.log(posts);
+  return (
+    <div className="App">
+      <Navbar />
+      <Routes>
+           <Route path="/" element={<Home posts={posts} />} />
+           <Route exact path="/login" element={<Login />} />
+           <Route exact path="/about" element={<About />} />
+           <Route exact path="/user/info" element={<UserInfo/>} />
+           <Route path="*" element={<Page404/>} />
+      </Routes>
+      
+    </div>
+  );
+}
+
+export default App;
+
+
+2----------------login.js-----------------------
+ const Login=()=>{
+    return <h1>Login</h1>
+}
+export default Login;
+
+3-------------------index.js----------------------
+import Home from './Home';
+import Login from './Login';
+
+export { Home ,Login};
+
+3=========================Navbar Link===============================
+1-----------------Link----------------------------
+import styles from '../styles/navbar.module.css';
+import { Link } from 'react-router-dom';
+const Navbar = () => {
+  return (
+    <div className={styles.nav}>
+      <div className={styles.leftDiv}>
+        <Link to="/">
+          <img
+            alt=""
+            src="https://ninjasfiles.s3.amazonaws.com/0000000000003454.png"
+          />
+        </Link>
+      </div>
+
+      <div className={styles.rightNav}>
+        <div className={styles.user}>
+          <a href="/">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxXjYfou58DzQmbhstbtO7hZEYTfroOmEqrLtp4zTC5g&s"
+              alt="Profile"
+              className={styles.userDp}
+            />
+          </a>
+          <span>Aakash</span>
+        </div>
+
+        <div className={styles.navLinks}>
+          <ul>
+            <li>
+            <Link to="/login">Log in</Link>
+            </li>
+            <li>
+              <Link to="/logout">Log out</Link>
+            </li>
+            <li>
+              <Link to="/signup">Register</Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;
+
+4-=====================================================
