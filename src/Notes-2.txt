@@ -126,4 +126,201 @@ const Navbar = () => {
 
 export default Navbar;
 
-4-=====================================================
+4-====================Login page and styles=================================
+1--------------------Login.js-----------------------
+import styles from '../styles/login.module.css';
+
+const Login = () => {
+  return (
+    <form className={styles.loginForm}>
+      <span className={styles.loginSignupHeader}>Log In</span>
+
+      <div className={styles.field}>
+        <input type="email" placeholder="Email" required />
+      </div>
+
+      <div className={styles.field}>
+        <input type="password" placeholder="Paasword" required />
+      </div>
+
+      <div className={styles.field}>
+        <button>Log In</button>
+      </div>
+    </form>
+  );
+};
+
+export default Login;
+
+2--------------------login.module.css--------------------------------
+.loginSignupHeader {
+    font-weight: 600;
+    font-size: 30px;
+    color: #ef7917;
+}
+
+.loginForm {
+    background-color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+    margin: 50px auto;
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.field {
+    width: 100%;
+}
+
+.field input {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+    border-radius: 6px;
+    width: 100%;
+    height: 40px;
+    margin-top: 20px;
+    padding: 5px;
+    font-size: 15px;
+}
+
+.field input:focus {
+    outline: none;
+}
+
+.field button {
+    width: 100%;
+    margin-top: 20px;
+    background: #ef7917;
+    border-radius: 2px;
+    color: #fff;
+    font-size: 20px;
+    padding: 9px;
+    border: none;
+    outline: none;
+}
+
+.field button:hover {
+    cursor: pointer;
+}
+
+.field button:disabled {
+    cursor: not-allowed;
+}
+
+3-------------index.css body added------------------------
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f7f9fc;
+}
+
+5=========Animated Toast using  =============================
+1-----------------install react-toast-notifications---------------------
+S C:\Users\premn\Desktop\REACTWS\major-codial-app> npm i  --force  react-toast-notifications
+
+2----------------Login.js---------------------------
+import { useState } from 'react';
+import { useToasts } from 'react-toast-notifications';
+
+import styles from '../styles/login.module.css';
+import { login } from '../api';
+
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loggingIn, setLoggingIn] = useState(false);
+  const { addToast } = useToasts();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoggingIn(true);
+
+    if (!email || !password) {
+      return addToast('Please enter both email and password', {
+        appearance: 'error',
+      });
+    }
+
+    const response = await login(email, password);
+
+    if (response.success) {
+      addToast('Successfully logged in', {
+        appearance: 'success',
+      });
+    } else {
+      addToast(response.message, {
+        appearance: 'error',
+      });
+    }
+
+    setLoggingIn(false);
+  };
+
+  return (
+    <form className={styles.loginForm} onSubmit={handleSubmit}>
+      <span className={styles.loginSignupHeader}>Log In</span>
+
+      <div className={styles.field}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+
+      <div className={styles.field}>
+        <input
+          type="password"
+          placeholder="Paasword"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+
+      <div className={styles.field}>
+        <button disabled={loggingIn}>
+          {loggingIn ? 'Logging in...' : 'Log In'}
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default Login;
+
+3------------------login api/index.js--------------
+export const login = (email, password) => {
+  return customFetch(API_URLS.login(), {
+    method: 'POST',
+    body: { email, password },
+  });
+};
+
+4-----------------main index.js---------------------------------
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+//import reportWebVitals from './reportWebVitals';
+import './styles/index.css';
+import { App } from './components';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { ToastProvider } from 'react-toast-notifications';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+     <ToastProvider autoDismiss autoDismissTimeout={5000} placement="top-left">
+     <Router> <App /></Router>
+    </ToastProvider>
+  </React.StrictMode>
+);
+
+
+

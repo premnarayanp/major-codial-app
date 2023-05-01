@@ -1,14 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+//import reportWebVitals from './reportWebVitals';
 import './styles/index.css';
 import { App } from './components';
 import { BrowserRouter as Router } from 'react-router-dom';
-//import reportWebVitals from './reportWebVitals';
+import { ToastProvider } from 'react-toast-notifications';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-   <Router> <App /></Router>
+     <ToastProvider autoDismiss autoDismissTimeout={5000} placement="top-left">
+     <Router> <App /></Router>
+    </ToastProvider>
   </React.StrictMode>
 );
 

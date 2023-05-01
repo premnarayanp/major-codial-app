@@ -51,12 +51,12 @@ export const getPosts = (page = 1, limit = 5) => {
   });
 };
 
-// export const login = (email, password) => {
-//   return customFetch(API_URLS.login(), {
-//     method: 'POST',
-//     body: { email, password },
-//   });
-// };
+export const login = (email, password) => {
+  return customFetch(API_URLS.login(), {
+    method: 'POST',
+    body: { email, password },
+  });
+};
 
 // export const register = async (name, email, password, confirmPassword) => {
 //   return customFetch(API_URLS.signup(), {
