@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 //import reportWebVitals from './reportWebVitals';
 import './styles/index.css';
 import { App } from './components';
+import { AuthProvider } from './providers/AuthProvider';
+
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
 
@@ -10,7 +12,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
      <ToastProvider autoDismiss autoDismissTimeout={5000} placement="top-left">
-     <Router> <App /></Router>
+      <AuthProvider>
+        <Router> 
+          <App />
+        </Router>
+      </AuthProvider>
     </ToastProvider>
   </React.StrictMode>
 );
