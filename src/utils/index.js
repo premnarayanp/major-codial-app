@@ -1,5 +1,4 @@
 export * from './constants';
-
 export const setItemInLocalStorage = (key, value) => {
   if (!key || !value) {
     return console.error('Can not store in LS');
@@ -16,7 +15,7 @@ export const getItemFromLocalStorage = (key) => {
     return console.error('Can get the value from LS');
   }
 
-  localStorage.getItem(key);
+  return localStorage.getItem(key);
 };
 
 export const removeItemFromLocalStorage = (value, key) => {

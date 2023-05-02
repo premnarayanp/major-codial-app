@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 //import {BrowserRouter as Routes,Route} from 'react-router-dom'
 import {Routes, Route} from 'react-router-dom';
 
-import { getPosts } from '../api';
-import {  Home ,Login } from '../pages';
+// import { getPosts } from '../api';
+import { useAuth } from '../hooks';
+import {  Home ,Login,Signup } from '../pages';
 import { Loader, Navbar } from './';
 
 const About=()=>{
@@ -20,24 +21,26 @@ const Page404=()=>{
 
 
 function App() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [posts, setPosts] = useState([]);
+  // const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await getPosts();
+  const auth = useAuth();
 
-      if (response.success) {
-        setPosts(response.data.posts);
-      }
+  // useEffect(() => {
+  //   const fetchPosts = async () => {
+  //     const response = await getPosts();
 
-      setLoading(false);
-    };
+  //     if (response.success) {
+  //       setPosts(response.data.posts);
+  //     }
 
-    fetchPosts();
-  }, []);
+  //     setLoading(false);
+  //   };
 
-  if (loading) {
+  //   fetchPosts();
+  // }, []);
+
+  if (auth.loading) {
     return <Loader />;
   }
 
@@ -46,11 +49,13 @@ function App() {
     <div className="App">
       <Navbar />
       <Routes>
-           <Route path="/" element={<Home posts={posts} />} />
+           <Route path="/" element={<Home />} />
            <Route exact path="/login" element={<Login />} />
            <Route exact path="/about" element={<About />} />
            <Route exact path="/user/info" element={<UserInfo/>} />
+           <Route exact path="/register" element={<Signup/>} />
            <Route path="*" element={<Page404/>} />
+           
       </Routes>
       
     </div>

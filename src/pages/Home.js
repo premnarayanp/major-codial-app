@@ -1,9 +1,31 @@
+import { useEffect, useState } from 'react';
+
+import { Comment, Loader } from '../components';
+import { getPosts } from '../api';
 import styles from '../styles/home.module.css';
-import PropTypes from 'prop-types'
 
-const Home = ( {posts} ) => {
+const Home = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState([]);
 
-  console.log("posta",posts);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await getPosts();
+
+      if (response.success) {
+        setPosts(response.data.posts);
+      }
+
+      setLoading(false);
+    };
+
+    fetchPosts();
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className={styles.postsList}>
       {posts.map((post) => (
@@ -35,7 +57,7 @@ const Home = ( {posts} ) => {
                   src="data:image/png;base64,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"
                   alt="comments-icon"
                 />
-                <span>2</span>
+                <span>{post.comments.length}</span>
               </div>
             </div>
             <div className={styles.postCommentBox}>
@@ -43,15 +65,9 @@ const Home = ( {posts} ) => {
             </div>
 
             <div className={styles.postCommentsList}>
-              <div className={styles.postCommentsItem}>
-                <div className={styles.postCommentHeader}>
-                  <span className={styles.postCommentAuthor}>Bill</span>
-                  <span className={styles.postCommentTime}>a minute ago</span>
-                  <span className={styles.postCommentLikes}>22</span>
-                </div>
-
-                <div className={styles.postCommentContent}>Random comment</div>
-              </div>
+              {post.comments.map((comment) => (
+                <Comment comment={comment} />
+              ))}
             </div>
           </div>
         </div>
@@ -60,8 +76,4 @@ const Home = ( {posts} ) => {
   );
 };
 
-
-Home.propTypes={
-  posts:PropTypes.array.isRequired,
-}
 export default Home;
