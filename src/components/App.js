@@ -1,11 +1,24 @@
 // import { useEffect, useState } from 'react';
-//import {BrowserRouter as Routes,Route} from 'react-router-dom'
-import {Routes, Route} from 'react-router-dom';
+//import {BrowserRouter as Routes,Route,} from 'react-router-dom'
+import {Routes, Route,Navigate} from 'react-router-dom';
 
 // import { getPosts } from '../api';
 import { useAuth } from '../hooks';
 import {  Home ,Login,Signup,Settings } from '../pages';
 import { Loader, Navbar } from './';
+
+const PrivateRoute=()=> {
+  const auth = useAuth();
+  if (auth.user) {
+    return (
+      <Settings/>
+    )
+  }else{
+    return (
+      <Login/>
+    )
+  }
+}
 
 const About=()=>{
   return <h1>About</h1>
@@ -54,7 +67,7 @@ function App() {
            <Route exact path="/about" element={<About />} />
            <Route exact path="/user/info" element={<UserInfo/>} />
            <Route exact path="/register" element={<Signup/>} />
-           <Route exact path="/settings" element={<Settings/>} />
+           <Route exact path="/settings" element={<PrivateRoute/>} />
            <Route path="*" element={<Page404/>} />
            
       </Routes>
@@ -62,5 +75,5 @@ function App() {
     </div>
   );
 }
-
+// <Route exact path="/settings" element={<Settings/>} />
 export default App;
