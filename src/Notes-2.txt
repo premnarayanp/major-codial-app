@@ -324,3 +324,265 @@ root.render(
 
 
 
+================================Authorization====================================
+1---------------AuthProvider.js--------------------------
+import { createContext } from 'react';
+
+import { useProvideAuth } from '../hooks';
+
+const initialState = {
+  user: null,
+  login: () => {},
+  logout: () => {},
+  loading: true,
+};
+
+export const AuthContext = createContext(initialState);
+
+export const AuthProvider = ({ children }) => {
+  const auth = useProvideAuth();
+
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
+};
+
+2------------hooks/index.js-------------------------------
+import { useContext, useState } from 'react';
+
+import { AuthContext } from '../providers/AuthProvider';
+import { login as userLogin } from '../api';
+import {
+  setItemInLocalStorage,
+  LOCALSTORAGE_TOKEN_KEY,
+  removeItemFromLocalStorage,
+} from '../utils';
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
+export const useProvideAuth = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const login = async (email, password) => {
+    const response = await userLogin(email, password);
+
+    if (response.success) {
+      setUser(response.data.user);
+      setItemInLocalStorage(
+        LOCALSTORAGE_TOKEN_KEY,
+        response.data.token ? response.data.token : null
+      );
+      return {
+        success: true,
+      };
+    } else {
+      return {
+        success: false,
+        message: response.message,
+      };
+    }
+  };
+
+  const logout = () => {
+    setUser(null);
+    removeItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
+  };
+
+  return {
+    user,
+    login,
+    logout,
+    loading,
+  };
+};
+
+3--------------utils/index.js------------------------------------
+export * from './constants';
+
+export const setItemInLocalStorage = (key, value) => {
+  if (!key || !value) {
+    return console.error('Can not store in LS');
+  }
+
+  const valueToStore =
+    typeof value !== 'string' ? JSON.stringify(value) : value;
+
+  localStorage.setItem(key, valueToStore);
+};
+
+export const getItemFromLocalStorage = (key) => {
+  if (!key) {
+    return console.error('Can get the value from LS');
+  }
+
+  localStorage.getItem(key);
+};
+
+export const removeItemFromLocalStorage = (value, key) => {
+  if (!key) {
+    return console.error('Can get the value from LS');
+  }
+
+  localStorage.removeItem(key);
+};
+
+export const getFormBody = (params) => {
+  let formBody = [];
+
+  for (let property in params) {
+    let encodedKey = encodeURIComponent(property); // 'user name' => 'user%20name'
+    let encodedValue = encodeURIComponent(params[property]); // aakash 123 => aakash%2020123
+
+    formBody.push(encodedKey + '=' + encodedValue);
+  }
+
+  return formBody.join('&'); // 'username=aakash&password=123213'
+};
+
+4---------------------api/index.js--------------------------
+
+import { API_URLS, getFormBody, LOCALSTORAGE_TOKEN_KEY } from '../utils';
+
+const customFetch = async (url, { body, ...customConfig }) => {
+  const token = window.localStorage.getItem(LOCALSTORAGE_TOKEN_KEY);
+
+  const headers = {
+    'content-type': 'application/x-www-form-urlencoded',
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const config = {
+    ...customConfig,
+    headers: {
+      ...headers,
+      ...customConfig.headers,
+    },
+  };
+
+  if (body) {
+    config.body = getFormBody(body);
+  }
+
+  try {
+    const response = await fetch(url, config);
+    const data = await response.json();
+
+    if (data.success) {
+      return {
+        data: data.data,
+        success: true,
+      };
+    }
+
+    throw new Error(data.message);
+  } catch (error) {
+    console.error('error');
+    return {
+      message: error.message,
+      success: false,
+    };
+  }
+};
+
+export const getPosts = (page = 1, limit = 5) => {
+  return customFetch(API_URLS.posts(page, limit), {
+    method: 'GET',
+  });
+};
+
+export const login = (email, password) => {
+  return customFetch(API_URLS.login(), {
+    method: 'POST',
+    body: { email, password },
+  });
+};
+
+5-------------------Page/Login.js-------------------------
+import { useState } from 'react';
+import { useToasts } from 'react-toast-notifications';
+
+import styles from '../styles/login.module.css';
+import { useAuth } from '../hooks';
+
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loggingIn, setLoggingIn] = useState(false);
+  const { addToast } = useToasts();
+  const auth = useAuth();
+  console.log("auth=",auth);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoggingIn(true);
+
+    if (!email || !password) {
+      return addToast('Please enter both email and password', {
+        appearance: 'error',
+      });
+    }
+
+    const response = await auth.login(email, password);
+
+    if (response.success) {
+      addToast('Successfully logged in', {
+        appearance: 'success',
+      });
+    } else {
+      addToast(response.message, {
+        appearance: 'error',
+      });
+    }
+
+    setLoggingIn(false);
+  };
+
+  return (
+    <form className={styles.loginForm} onSubmit={handleSubmit}>
+      <span className={styles.loginSignupHeader}>Log In</span>
+
+      <div className={styles.field}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+
+      <div className={styles.field}>
+        <input
+          type="password"
+          placeholder="Paasword"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+
+      <div className={styles.field}>
+        <button disabled={loggingIn}>
+          {loggingIn ? 'Logging in...' : 'Log In'}
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default Login;
+
+7-==========================jwt-decode================================
+1-------------install when come error--------------------------
+----Error----------------
+PS C:\Users\premn\Desktop\REACTWS\major-codial-app> npm i jwt-decode                                         
+npm ERR! code ERESOLVE
+npm ERR! ERESOLVE could not resolve
+npm ERR!
+
+----Solution--to installed it--------------
+npm install --legacy-peer-deps
+
+----npm i jwt-decode --------- 
