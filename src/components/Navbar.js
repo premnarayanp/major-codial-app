@@ -10,7 +10,7 @@ const Navbar = () => {
   return (
     <div className={styles.nav}>
       <div className={styles.leftDiv}>
-        <Link to="/">
+      <Link to="/">
           <img
             alt=""
             src="https://ninjasfiles.s3.amazonaws.com/0000000000003454.png"
@@ -21,13 +21,13 @@ const Navbar = () => {
       <div className={styles.rightNav}>
         {auth.user && (
           <div className={styles.user}>
-            <a href="/">
+          <Link to="/settings">
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxXjYfou58DzQmbhstbtO7hZEYTfroOmEqrLtp4zTC5g&s"
                 alt=""
                 className={styles.userDp}
               />
-            </a>
+            </Link>
             <span>{auth.user.name}</span>
           </div>
         )}

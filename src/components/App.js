@@ -4,7 +4,7 @@ import {Routes, Route} from 'react-router-dom';
 
 // import { getPosts } from '../api';
 import { useAuth } from '../hooks';
-import {  Home ,Login,Signup } from '../pages';
+import {  Home ,Login,Signup,Settings } from '../pages';
 import { Loader, Navbar } from './';
 
 const About=()=>{
@@ -54,6 +54,7 @@ function App() {
            <Route exact path="/about" element={<About />} />
            <Route exact path="/user/info" element={<UserInfo/>} />
            <Route exact path="/register" element={<Signup/>} />
+           <Route exact path="/settings" element={<Settings/>} />
            <Route path="*" element={<Page404/>} />
            
       </Routes>
