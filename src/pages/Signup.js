@@ -1,5 +1,6 @@
 import { useState } from 'react';
 //import { useHistory } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
 
 import { useAuth } from '../hooks';
@@ -60,6 +61,12 @@ const Signup = () => {
 
     setSigningUp(false);
   };
+
+  if (auth.user) {
+    return (
+      <Navigate to="/" replace={true} />
+    )
+  }
 
   return (
     <form className={styles.loginForm} onSubmit={handleFormSubmit}>
