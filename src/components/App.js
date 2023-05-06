@@ -2,22 +2,35 @@
 //import {BrowserRouter as Routes,Route,} from 'react-router-dom'
 import {Routes, Route,Navigate} from 'react-router-dom';
 
+
 // import { getPosts } from '../api';
 import { useAuth } from '../hooks';
-import {  Home ,Login,Signup,Settings } from '../pages';
+import {  Home ,Login,Signup,Settings,UserProfile } from '../pages';
 import { Loader, Navbar } from './';
 
-const PrivateRoute=()=> {
+// const PrivateRoute=()=> {
+//   //https://stackoverflow.com/questions/69923420/how-to-use-private-route-in-react-router-domv6
+//   const auth = useAuth();
+//   if (auth.user) {
+//     return (
+//       <Settings/>
+//     )
+//   }else{
+//     return (
+//       <Login/>
+//     )
+//   }
+// }
+
+const PrivateRoute = ({ children}) => {
+
   const auth = useAuth();
+      // console.log("children",children);
   if (auth.user) {
-    return (
-      <Settings/>
-    )
-  }else{
-    return (
-      <Login/>
-    )
-  }
+      return children;
+    }
+    
+  return <Navigate to="/" />
 }
 
 const About=()=>{
@@ -67,9 +80,13 @@ function App() {
            <Route exact path="/about" element={<About />} />
            <Route exact path="/user/info" element={<UserInfo/>} />
            <Route exact path="/register" element={<Signup/>} />
-           <Route exact path="/settings" element={<PrivateRoute/>} />
+
+           {/* <Route exact path="/settings" element={<PrivateRoute/>} /> */}
+           {/* <Route exact path="/user/:userId" element={<PrivateRoute/>} /> */}
+           <Route path="/settings" element={ <PrivateRoute> <Settings /> </PrivateRoute>}/>
+           <Route exact path="/user/:userId" element={ <PrivateRoute> <UserProfile /> </PrivateRoute>}/>
            <Route path="*" element={<Page404/>} />
-           
+            
       </Routes>
       
     </div>

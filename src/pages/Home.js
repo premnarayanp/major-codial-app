@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Comment, Loader } from '../components';
 import { getPosts } from '../api';
@@ -15,7 +16,8 @@ const Home = () => {
       if (response.success) {
         setPosts(response.data.posts);
       }
-
+ 
+      console.log(response.data.posts);
       setLoading(false);
     };
 
@@ -37,11 +39,18 @@ const Home = () => {
                 alt="user-pic"
               />
               <div>
-                <span className={styles.postAuthor}>{post.user.name}</span>
+              <Link
+                  to={{
+                    pathname: `/user/${post.user._id}`,
+                  }}
+                  className={styles.postAuthor}
+                >
+                  {post.user.name}
+                </Link>
                 <span className={styles.postTime}>a minute ago</span>
               </div>
             </div>
-            <div className={styles.postContent}>{post.conent}</div>
+            <div className={styles.postContent}>{post.content}</div>
 
             <div className={styles.postActions}>
               <div className={styles.postLike}>

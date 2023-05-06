@@ -44,7 +44,7 @@ const customFetch = async (url, { body, ...customConfig }) => {
   }
 };
 
-export const getPosts = (page = 1, limit = 5) => {
+export const getPosts = (page = 1, limit = 10) => {
   return customFetch(API_URLS.posts(page, limit), {
     method: 'GET',
   });
@@ -71,17 +71,17 @@ export const editProfile = async (userId, name, password, confirmPassword) => {
   });
 };
 
-// export const fetchUserProfile = (userId) => {
-//   return customFetch(API_URLS.userInfo(userId), {
-//     method: 'GET',
-//   });
-// };
+export const fetchUserProfile = (userId) => {
+  return customFetch(API_URLS.userInfo(userId), {
+    method: 'GET',
+  });
+};
 
-// export const fetchUserFriends = () => {
-//   return customFetch(API_URLS.friends(), {
-//     method: 'GET',
-//   });
-// };
+export const fetchUserFriends = () => {
+  return customFetch(API_URLS.friends(), {
+    method: 'GET',
+  });
+};
 
 // export const addFriend = (userId) => {
 //   return customFetch(API_URLS.createFriendship(userId), {
