@@ -83,11 +83,11 @@ export const fetchUserFriends = () => {
   });
 };
 
-// export const addFriend = (userId) => {
-//   return customFetch(API_URLS.createFriendship(userId), {
-//     method: 'POST',
-//   });
-// };
+export const addFriend = (userId) => {
+  return customFetch(API_URLS.createFriendship(userId), {
+    method: 'POST',
+  });
+};
 
 // export const removeFriend = (userId) => {
 //   return customFetch(API_URLS.removeFriend(userId), {
