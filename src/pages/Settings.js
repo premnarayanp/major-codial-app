@@ -70,8 +70,8 @@ const Settings = () => {
     <div className={styles.settings}>
       <div className={styles.imgContainer}>
         <img
-          src="https://image.flaticon.com/icons/svg/2154/2154651.svg"
-          alt=""
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxXjYfou58DzQmbhstbtO7hZEYTfroOmEqrLtp4zTC5g&s"
+          alt="user-pic"
         />
       </div>
 
