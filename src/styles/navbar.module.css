@@ -38,11 +38,6 @@
     line-height: 22px;
 }
 
-.rightNav .user img {
-    height: 40px;
-    border-radius: 50px;
-}
-
 .nav .navLinks ul {
     display: flex;
     list-style-type: none;
