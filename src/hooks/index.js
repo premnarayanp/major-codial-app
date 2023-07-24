@@ -163,7 +163,11 @@ export const useProvidePosts = () => {
     fetchPosts();
   }, []);
 
-  const addPostToState = () => {};
+  const addPostToState = (post) => {
+    const newPosts = [post, ...posts];
+
+    setPosts(newPosts);
+  };
 
   return {
     data: posts,
