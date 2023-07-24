@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
 
-import { createComment } from '../api';
+import { createComment,toggleLike } from '../api';
 import { usePosts } from '../hooks';
 import styles from '../styles/home.module.css';
 import { Comment } from './';
@@ -36,6 +36,26 @@ const Post = ({ post }) => {
     }
   };
 
+  const handlePostLikeClick = async () => {
+    const response = await toggleLike(post._id, 'Post');
+
+    if (response.success) {
+      if (response.data.deleted) {
+        addToast('Like removed successfully!', {
+          appearance: 'success',
+        });
+      } else {
+        addToast('Like added successfully!', {
+          appearance: 'success',
+        });
+      }
+    } else {
+      addToast(response.message, {
+        appearance: 'error',
+      });
+    }
+  };
+
   return (
     <div className={styles.postWrapper} key={post._id}>
       <div className={styles.postHeader}>
@@ -63,10 +83,12 @@ const Post = ({ post }) => {
 
         <div className={styles.postActions}>
           <div className={styles.postLike}>
-            <img
-             src="data:image/png;base64,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"
-             alt="likes-icon"
-            />
+            <button onClick={handlePostLikeClick}>
+             <img
+               src="data:image/png;base64,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"
+               alt="likes-icon"
+             />
+            </button>
             <span>{post.likes.length}</span>
           </div>
 
