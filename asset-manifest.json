@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/major-codial-app/static/css/main.13975d13.css",
+    "main.js": "/major-codial-app/static/js/main.5ae33001.js",
+    "index.html": "/major-codial-app/index.html",
+    "main.13975d13.css.map": "/major-codial-app/static/css/main.13975d13.css.map",
+    "main.5ae33001.js.map": "/major-codial-app/static/js/main.5ae33001.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.13975d13.css",
+    "static/js/main.5ae33001.js"
+  ]
+}
